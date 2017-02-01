@@ -33,29 +33,12 @@ final class CouchApp {
 
     private function __construct() {
 		#If running locally enter your own host, port, username and password
-    $host = '';
-		$port = '';
+    $host = 'cap-sg-prd-2.integration.ibmcloud.com';
+		$port = '18073';
 		$username = '';
 		$password = '';
 
-		if($vcapStr = getenv('VCAP_SERVICES')) {
-			$vcap = json_decode($vcapStr, true);
-			foreach ($vcap as $serviceTypes) {
-				foreach ($serviceTypes as $service) {
-					if($service['name'] == 'todo-db-php') {
-						$credentials = $service['credentials'];
-						$username = $credentials['username'];
-						$password = $credentials['password'];
-						$parsedUrl = parse_url($credentials['url']);
-						$host = $parsedUrl['host'];
-						$port = isset($parsedUrl['port']) ?
-						$parsedUrl['port'] : $parsedUrl['scheme'] == 'http' ?
-						'80' : '443';
-						break;
-					}
-				}
-			}
-		}
+		
 		$this->sag = new Sag($host, $port);
 		$this->sag->useSSL(true);
 		$this->sag->login($username, $password);
